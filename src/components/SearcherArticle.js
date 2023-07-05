@@ -1,51 +1,59 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import wikiStore from '../data/WikiStore';
+import styles from '../styles/SearcherArticle.module.scss';
+import search from '../images/search.png'
 
 const WikipediaSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [formattedArticles, setFormattedArticles] = useState([]);
 
   const searchArticles = async () => {
-    try {
-      const response = await axios.get(
-        `https://ru.wikipedia.org/w/api.php?action=query&list=search&srsearch=${searchQuery}&format=json&origin=*`
-      );
-      console.log(response);
-      const results = response.data.query.search;
-      const formattedResults = results.map((result) => ({
-        pageid: result.pageid,
+    await wikiStore.searchArticles(searchQuery);
+    const results = wikiStore.searchResults;
+    if (results.length === 0) {
+      setFormattedArticles([]);
+    } else {
+      setFormattedArticles(results.map((result) => ({
+        id: result.pageid,
         title: result.title,
-        link: `https://ru.wikipedia.org/wiki/${result.title.replace(/\s/g, '_')}`
-      }));
-
-      setSearchResults(formattedResults);
-    } catch (error) {
-      console.error(error);
+        link: `https://en.wikipedia.org/wiki/${result.title.replace(/\s/g, '_')}`
+      })));
     }
   };
 
-
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      searchArticles();
+      event.preventDefault();
+    }
+  }
 
   return (
-    <div>
-      <h1>Wikipedia Search</h1>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <button onClick={searchArticles}>Search</button>
+    <div className={styles.search}>
+      <div className={styles.header}>
+        <p id={styles.title}>Wikipedia Search</p>
+        <img id={styles.img} src={search} alt='search-img'></img>
+      </div>
 
-      <h2>Search Results</h2>
-      <ul>
-        {searchResults.map((result) => (
-          <li key={result.pageid}>
-            <a href={result.link} target="_blank" rel="noopener noreferrer">
-              {result.title}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className={styles['search-form']}>
+        <input
+          id={styles['search-input']}
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <button id={styles['search-button']} onClick={searchArticles}>Search</button>
+      </div>
+
+      {formattedArticles.length === 0 ? (<p id={styles.nothing}>There were no results matching the query.</p>) :
+        (<ul className={styles.list}>
+          {formattedArticles.map((result, index) => (
+            <li className={styles.el} key={index} onClick={() => window.open(result.link, '_blank')}>
+              <p>{result.title}</p>
+            </li>
+          ))}
+        </ul>)}
     </div>
   );
 };

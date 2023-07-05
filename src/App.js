@@ -4,9 +4,9 @@ import RandomArticle from './components/RandomArticle';
 
 function App() {
   return (
-    <div className="App">
-      <WikipediaSearch/>
-      <RandomArticle/>
+    <div className='App'>
+      <WikipediaSearch />
+      <RandomArticle />
     </div>
   );
 }

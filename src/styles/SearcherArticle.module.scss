@@ -1,0 +1,69 @@
+@mixin button {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: $color;
+    color: white;
+}
+
+$color: rgb(57, 86, 123);
+
+.search {
+    color: $color;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+
+    .header {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+
+        #title {
+            font-weight: 500;
+            font-size: 36px;
+            font-style: italic;
+            color: inherit;
+        }
+
+        #img {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+
+        #search-input {
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: $color;
+            color: white;
+        }
+
+        #search-button {
+            @include button();
+        }
+    }
+
+    #nothing {
+        font-size: 14px;
+    }
+
+    .list {
+        list-style-type: none;
+
+        .el {
+            cursor: pointer;
+            margin: 10px 0;
+            border: 1px solid $color;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 18px;
+        }
+    }
+}

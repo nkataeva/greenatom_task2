@@ -1,0 +1,5 @@
+@import './SearcherArticle.module.scss';
+
+#random-button {
+    @include button;
+}
